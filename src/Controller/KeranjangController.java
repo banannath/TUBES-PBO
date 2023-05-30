@@ -121,12 +121,29 @@ public class KeranjangController {
         return hasil; //mengembalikan hasil dari operasi penyimpanan data barang
     }
     
-        public int deleteKeranjang(){
+    public int deleteKeranjang(){
         ConnectionManager conman = new ConnectionManager(); //membuat objek untuk koneksi ke database dengan memanggil method getConnection()
         int hasil = 0;
         try (Connection con = conman.getConnection()) {
             // Menyiapkan pernyataan SQL
             String query = "DELETE FROM keranjang";
+            try (Statement stm = con.createStatement()) { //menampung hasil eksekusi dari sebuah query SQL yang akan dijalankan.
+                hasil = stm.executeUpdate(query); //eksekusi query sql yang telah dibuat sebelumnya
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(KeranjangController.class.getName()).log(Level.SEVERE, null, ex); //mencatat pesan kesalalahan  
+        } finally {
+            conman.closeConnection(); //menutup koneksi database
+        }
+        return hasil;
+    }
+    
+    public int deleteDataKeranjang(String id_barang){
+        ConnectionManager conman = new ConnectionManager(); //membuat objek untuk koneksi ke database dengan memanggil method getConnection()
+        int hasil = 0;
+        try (Connection con = conman.getConnection()) {
+            // Menyiapkan pernyataan SQL
+            String query = "DELETE FROM keranjang WHERE id_barang = '" + id_barang +"'";
             try (Statement stm = con.createStatement()) { //menampung hasil eksekusi dari sebuah query SQL yang akan dijalankan.
                 hasil = stm.executeUpdate(query); //eksekusi query sql yang telah dibuat sebelumnya
             }
