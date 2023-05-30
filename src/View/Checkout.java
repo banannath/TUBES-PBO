@@ -4,6 +4,7 @@
  */
 package View;
 
+import Connection.ConnectionManager;
 import Controller.BarangController;
 import Controller.KeranjangController;
 import Controller.TransaksiController;
@@ -16,8 +17,13 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import java.lang.*;
 import static java.lang.Double.parseDouble;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -288,7 +294,16 @@ public class Checkout extends javax.swing.JFrame {
 
             TransaksiController ct = new TransaksiController();
             Transaksi transaksiBaru = new Transaksi(id_barang, username, nama, kategori, harga, jumlah, totalharga, waktutransaksi);
-            int hasil = ct.createTransaksi(transaksiBaru);
+            int hasiltransaksi = ct.createTransaksi(transaksiBaru);
+            
+            BarangController cb = new BarangController();
+            int stoklama = cb.getStokbyId(id_barang);
+            int updatestok = stoklama - jumlah;
+            
+            BarangController ucb = new BarangController();
+            Barang updatebarang = new Barang(id_barang, nama, kategori, harga, updatestok);
+            int hasilupdate = ucb.updateBarang(updatebarang);
+            
             
             i++; //increment
         }  
@@ -306,8 +321,7 @@ public class Checkout extends javax.swing.JFrame {
 
     private void jPanel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseClicked
         // TODO add your handling code here:
-        String id_barang,username,nama,kategori;
-        int harga,stok,jumlah,totalharga;
+        String id_barang;
         
         int row = tabel.getSelectedRow();
         id_barang = tabel.getValueAt(row, 0).toString();

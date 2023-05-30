@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import Model.Barang;
 import Connection.ConnectionManager;
+import java.sql.PreparedStatement;
 
 /**
  *
@@ -27,7 +28,7 @@ public class BarangController {
         int hasil = 0; //variabel unutk menyimpan hasil operasi database
         try (Connection con = conman.getConnection()) { //mencoba untuk melakukan koneksi ke database dengan memanggil method getConnection()
             //query sql untuk memasukkan barang baru
-            String query = "INSERT INTO barang(id_barang, nama, kategori, harga) VALUES ('" + barang.getId_barang() + "', '" + barang.getNama() + "', '" + barang.getKategori()+ "', '" + barang.getHarga()+ "')"; //query untuk memasukkan data barang yang baru  
+            String query = "INSERT INTO barang(id_barang, nama, kategori, harga, stok) VALUES ('" + barang.getId_barang() + "', '" + barang.getNama() + "', '" + barang.getKategori()+ "', '" + barang.getHarga()+ "', '" + barang.getStok()+ "')"; //query untuk memasukkan data barang yang baru  
             String sama = "SELECT * FROM barang WHERE id_barang = '"+barang.getId_barang()+"'"; //melihat barang berdasarkan id_barang yanga da
             Statement st = con.createStatement(); //membuat statement untuk eksekusi query
             ResultSet rs = st.executeQuery(sama); //eksekusi query
@@ -74,7 +75,7 @@ public class BarangController {
         ConnectionManager conman = new ConnectionManager(); //mencoba untuk melakuukan koneksi ke database dengan memanggil method getConnection()
         int hasil = 0; //variabel unutk menyimpan hasil operasi database
         try (Connection con = conman.getConnection()) { //mencoba untuk melakuukan koneksi ke database dengan memanggil method getConnection()
-            String query = "UPDATE barang SET nama = '" + barang.getNama() + "', kategori = '" + barang.getKategori() + "', harga = '" + barang.getHarga() + "' WHERE id_barang = '" + barang.getId_barang() + "'"; //eksekusi query sql untuk update data milik barang berdasarkan id
+            String query = "UPDATE barang SET nama = '" + barang.getNama() + "', kategori = '" + barang.getKategori() + "', harga = '" + barang.getHarga() + "', stok = '" + barang.getStok() + "' WHERE id_barang = '" + barang.getId_barang() + "'"; //eksekusi query sql untuk update data milik barang berdasarkan id
             try (Statement stm = con.createStatement()) { //menampung hasil eksekusi dari sebuah query SQL yang akan dijalankan.
                 hasil = stm.executeUpdate(query); //eksekusi query sql yang telah dibuat sebelumnya
             }
@@ -86,11 +87,11 @@ public class BarangController {
         return hasil; //mengembalikan hasil dari operasi penyimpanan data barang
     }
     
-    public int deleteBarang(int id) {
+    public int deleteBarang(Barang barang) {
         ConnectionManager conman = new ConnectionManager(); //membuat objek untuk koneksi ke database dengan memanggil method getConnection()
         int hasil = 0; //variabel unutk menyimpan hasil operasi database
         try (Connection con = conman.getConnection()) { //mencoba untuk melakuukan koneksi ke database dengan memanggil method getConnection()
-            String query = "DELETE FROM barang WHERE id_barang = '" + id + "'"; //eksekusi query sql untuk delete data milik barang berdasarkan id
+            String query = "DELETE FROM barang WHERE id_barang = '" + barang.getId_barang() + "'"; //eksekusi query sql untuk delete data milik barang berdasarkan id
             try (Statement stm = con.createStatement()) { //menampung hasil eksekusi dari sebuah query SQL yang akan dijalankan.
                 hasil = stm.executeUpdate(query); //eksekusi query sql yang telah dibuat sebelumnya
             }
@@ -100,6 +101,47 @@ public class BarangController {
             conman.closeConnection(); //menutup koneksi database
         }
         return hasil; //mengembalikan hasil dari operasi penyimpanan data barang.
+    }
+    
+    public int getStokbyId(String id_barang) {
+        ConnectionManager conman = new ConnectionManager();
+        int stok = 0;
+
+        try (Connection con = conman.getConnection()) {
+            String query = "SELECT stok FROM barang WHERE id_barang = ?";
+
+            try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
+                preparedStatement.setString(1, id_barang);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        stok = resultSet.getInt("stok");
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BarangController.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            conman.closeConnection();
+        }
+
+        return stok;
+    }
+    
+    public int updateStok(Barang barang) {
+        ConnectionManager conman = new ConnectionManager(); //mencoba untuk melakuukan koneksi ke database dengan memanggil method getConnection()
+        int hasil = 0; //variabel unutk menyimpan hasil operasi database
+        try (Connection con = conman.getConnection()) { //mencoba untuk melakuukan koneksi ke database dengan memanggil method getConnection()
+            String query = "UPDATE barang SET stok = '" + barang.getStok() + "' WHERE id_barang = '" + barang.getId_barang() + "'"; //eksekusi query sql untuk update data milik barang berdasarkan id
+            try (Statement stm = con.createStatement()) { //menampung hasil eksekusi dari sebuah query SQL yang akan dijalankan.
+                hasil = stm.executeUpdate(query); //eksekusi query sql yang telah dibuat sebelumnya
+            }
+        } catch (SQLException ex) { //error handling
+            Logger.getLogger(BarangController.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            conman.closeConnection(); //menutup koneksi database
+        }
+        return hasil; //mengembalikan hasil dari operasi penyimpanan data barang
     }
         
 }

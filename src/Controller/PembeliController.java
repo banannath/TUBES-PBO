@@ -81,6 +81,21 @@ public class PembeliController {
         return hasil;
     }
     
+    public  int updatePembeli(Pembeli pembeli) {
+        ConnectionManager conman = new ConnectionManager();
+        int hasil = 0;
+        Connection con = conman.getConnection();
+        try {
+            String query = "UPDATE pembeli SET nama = '"+ pembeli.getNama()+ "', email = '" + pembeli.getEmail() + "', alamat = '" + pembeli.getAlamat() + "', password = '" + pembeli.getPassword()+ "' WHERE username = '" +  pembeli.getUsername() + "'";
+            Statement stm = con.createStatement();
+            hasil = stm.executeUpdate(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(PembeliController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        conman.closeConnection();
+        return hasil;
+    }
+    
     public boolean validatePembeli(Pembeli loginUser) {
         try {
             // Menyiapkan pernyataan SQL

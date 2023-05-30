@@ -271,6 +271,7 @@ public class Register extends javax.swing.JFrame {
         // TODO add your handling code here:
         Main balik = new Main();
         balik.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jLabel8MouseClicked
 
     /**

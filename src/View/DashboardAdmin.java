@@ -7,6 +7,7 @@ package View;
 import Controller.*;
 import Model.*;
 import java.util.*;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -17,12 +18,14 @@ public class DashboardAdmin extends javax.swing.JFrame {
     BarangController cb = new BarangController();
     TransaksiController ct = new TransaksiController();
     PembeliController cp = new PembeliController();
+    String session;
     /**
      * Creates new form DashboardAdmin
      */
     public DashboardAdmin() {
         initComponents();
-        clearTable();
+        tabel.setVisible(false);
+        jLabel14.setText("");
         hideButton();
         hideField();
     }
@@ -45,6 +48,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
         jTextField3.setVisible(false);
         jTextField4.setVisible(false);
         jTextField5.setVisible(false);
+        combobox.setVisible(false);
     }
     
     private void showField(){
@@ -55,9 +59,71 @@ public class DashboardAdmin extends javax.swing.JFrame {
         jTextField5.setVisible(true);
     }    
     
+    private void clearField(){
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextField4.setText("");
+        jTextField5.setText("");
+    } 
+    
     private void clearTable(){
         DefaultTableModel model = (DefaultTableModel) tabel.getModel();
         model.setRowCount(0);
+    }
+    
+    private void hideLabel(){
+        jLabel10.setText("");
+        jLabel11.setText("");
+        jLabel12.setText("");
+        jLabel13.setText("");
+        jLabel6.setText("");
+    }
+    
+    private void showPembeli(){
+        tabel.setVisible(true);
+        clearField();
+        List <Pembeli> list = cp.getAllPembeli(); 
+        Object[][] objectpem = new Object[list.size()][5]; 
+        int i =0 ; 
+        for (Pembeli pem : list) { 
+            objectpem[i][0] = pem.getUsername();
+            objectpem[i][1] = pem.getNama();
+            objectpem[i][2] = pem.getEmail();
+            objectpem[i][3] = pem.getAlamat();
+            objectpem[i][4] = pem.getPassword();
+            i++; //increment
+        }
+        tabel.setModel(new javax.swing.table.DefaultTableModel(objectpem, new  String[] {"Username", "Nama", "Email", "Alamat", "Password"}));
+        tabel.getColumnModel().getColumn(0).setPreferredWidth(5);
+        tabel.getColumnModel().getColumn(1).setPreferredWidth(5);
+        tabel.getColumnModel().getColumn(2).setPreferredWidth(5);
+        tabel.getColumnModel().getColumn(3).setPreferredWidth(5);
+        tabel.getColumnModel().getColumn(4).setPreferredWidth(5);
+        tabel.setDefaultEditor(Object.class, null);
+    }
+    
+    private void showBarang(){
+        tabel.setVisible(true);
+        clearField();
+        List <Barang> list = cb.getAllBarang(); 
+        Object[][] objectbrg = new Object[list.size()][5]; 
+        int i =0 ; 
+        for (Barang brg : list) { 
+            objectbrg[i][0] = brg.getId_barang();
+            objectbrg[i][1] = brg.getNama();
+            objectbrg[i][2] = brg.getKategori();
+            objectbrg[i][3] = brg.getHarga();
+            objectbrg[i][4] = brg.getStok();
+            i++; //increment
+        }
+        tabel.setModel(new javax.swing.table.DefaultTableModel(objectbrg, new  String[] {"ID", "Nama", "Kategori", "Harga", "Stok"}));
+        tabel.getColumnModel().getColumn(0).setPreferredWidth(5);
+        tabel.getColumnModel().getColumn(1).setPreferredWidth(5);
+        tabel.getColumnModel().getColumn(2).setPreferredWidth(5);
+        tabel.getColumnModel().getColumn(3).setPreferredWidth(5);
+        tabel.getColumnModel().getColumn(4).setPreferredWidth(5);
+        tabel.setDefaultEditor(Object.class, null);
     }
 
     /**
@@ -94,6 +160,8 @@ public class DashboardAdmin extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jTextField5 = new javax.swing.JTextField();
+        combobox = new javax.swing.JComboBox<>();
+        jLabel14 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mamania Bakery");
@@ -185,7 +253,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "", "", "", ""
             }
         ));
         tabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -196,6 +264,11 @@ public class DashboardAdmin extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tabel);
 
         update.setBackground(new java.awt.Color(255, 204, 204));
+        update.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                updateMouseClicked(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         jLabel7.setText("Update");
@@ -218,6 +291,11 @@ public class DashboardAdmin extends javax.swing.JFrame {
         );
 
         tambah.setBackground(new java.awt.Color(255, 204, 204));
+        tambah.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tambahMouseClicked(evt);
+            }
+        });
 
         jLabel8.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         jLabel8.setText("Tambah");
@@ -240,6 +318,11 @@ public class DashboardAdmin extends javax.swing.JFrame {
         );
 
         hapus.setBackground(new java.awt.Color(255, 204, 204));
+        hapus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                hapusMouseClicked(evt);
+            }
+        });
 
         jLabel9.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         jLabel9.setText("Hapus");
@@ -261,10 +344,13 @@ public class DashboardAdmin extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jLabel10.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel10.setText("");
 
+        jLabel11.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel11.setText("");
 
+        jLabel12.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel12.setText("");
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
@@ -273,57 +359,74 @@ public class DashboardAdmin extends javax.swing.JFrame {
             }
         });
 
+        jLabel13.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel13.setText("");
 
+        jLabel6.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel6.setText("");
+
+        combobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Roti", "Round Cake", "Pastry", "Kue Basah", "Parcel" }));
+
+        jLabel14.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
+        jLabel14.setText("Details");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(65, 65, 65)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(113, 113, 113)
-                        .addComponent(update, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(tambah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(hapus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(62, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel13)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel12)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(70, 70, 70)
+                                        .addComponent(update, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(29, 29, 29)
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addComponent(combobox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                                            .addComponent(jTextField4)
+                                            .addComponent(jTextField5)))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(tambah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(hapus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel11)
                                     .addComponent(jLabel10))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel13)
-                                    .addComponent(jLabel6))
                                 .addGap(87, 87, 87)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField4)
-                                    .addComponent(jTextField5))))
-                        .addGap(62, 62, 62))))
+                                    .addComponent(jTextField2)
+                                    .addComponent(jTextField1))))
+                        .addGap(66, 66, 66))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(189, 189, 189)
+                        .addComponent(jLabel14)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(83, 83, 83)
+                        .addGap(30, 30, 30)
+                        .addComponent(jLabel14)
+                        .addGap(28, 28, 28)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel10))
@@ -334,7 +437,8 @@ public class DashboardAdmin extends javax.swing.JFrame {
                         .addGap(20, 20, 20)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel12))
+                            .addComponent(jLabel12)
+                            .addComponent(combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(17, 17, 17)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -343,7 +447,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6))
-                        .addGap(39, 39, 39)
+                        .addGap(26, 26, 26)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(update, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tambah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -375,24 +479,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
         // TODO add your handling code here:
-        List <Barang> list = cb.getAllBarang(); 
-        Object[][] objectbrg = new Object[list.size()][5]; 
-        int i =0 ; 
-        for (Barang brg : list) { 
-            objectbrg[i][0] = brg.getId_barang();
-            objectbrg[i][1] = brg.getNama();
-            objectbrg[i][2] = brg.getKategori();
-            objectbrg[i][3] = brg.getHarga();
-            objectbrg[i][4] = brg.getStok();
-            i++; //increment
-        }
-        tabel.setModel(new javax.swing.table.DefaultTableModel(objectbrg, new  String[] {"ID", "Nama", "Kategori", "Harga", "Stok"}));
-        tabel.getColumnModel().getColumn(0).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(1).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(2).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(3).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(4).setPreferredWidth(5);
-        tabel.setDefaultEditor(Object.class, null);
+        showBarang();
         
         jLabel10.setText("ID Barang :");
         jLabel11.setText("Nama Barang :");
@@ -400,30 +487,17 @@ public class DashboardAdmin extends javax.swing.JFrame {
         jLabel13.setText("Harga Barang :");
         jLabel6.setText("Stok Barang :");
         
+        session = "barang";
         showButton();
         showField();
+        jTextField3.setVisible(false);
+        combobox.setVisible(true);
+        
     }//GEN-LAST:event_jLabel2MouseClicked
 
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
-        List <Pembeli> list = cp.getAllPembeli(); 
-        Object[][] objectpem = new Object[list.size()][5]; 
-        int i =0 ; 
-        for (Pembeli pem : list) { 
-            objectpem[i][0] = pem.getUsername();
-            objectpem[i][1] = pem.getNama();
-            objectpem[i][2] = pem.getEmail();
-            objectpem[i][3] = pem.getAlamat();
-            objectpem[i][4] = pem.getPassword();
-            i++; //increment
-        }
-        tabel.setModel(new javax.swing.table.DefaultTableModel(objectpem, new  String[] {"Username", "Nama", "Email", "Alamat", "Password"}));
-        tabel.getColumnModel().getColumn(0).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(1).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(2).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(3).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(4).setPreferredWidth(5);
-        tabel.setDefaultEditor(Object.class, null);
+        showPembeli();
         
         jLabel10.setText("Username :");
         jLabel11.setText("Nama Lengkap :");
@@ -431,8 +505,10 @@ public class DashboardAdmin extends javax.swing.JFrame {
         jLabel13.setText("Alamat :");
         jLabel6.setText("Password :");
         
+        session = "pembeli";
         showButton();
         showField();
+        combobox.setVisible(false);
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
@@ -443,9 +519,13 @@ public class DashboardAdmin extends javax.swing.JFrame {
 
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
         // TODO add your handling code here:
+        tabel.setVisible(true);
+        clearField();
         List <Transaksi> list = ct.getAllTransaksi(); 
         Object[][] objecttr = new Object[list.size()][8]; 
         int i =0 ; 
+        int pendapatan =0;
+        int barangterjual = 0;
         for (Transaksi trans : list) { 
             objecttr[i][0] = trans.getId_transaksi();
             objecttr[i][1] = trans.getId_barang();
@@ -455,7 +535,11 @@ public class DashboardAdmin extends javax.swing.JFrame {
             objecttr[i][5] = trans.getHargabarang();
             objecttr[i][6] = trans.getWaktutransaksi();
             objecttr[i][7] = trans.getTotalharga();
+            
+            pendapatan += Integer.parseInt(objecttr[i][7].toString()); 
+            barangterjual += Integer.parseInt(objecttr[i][4].toString());  
             i++; //increment
+             
         }
         tabel.setModel(new javax.swing.table.DefaultTableModel(objecttr, new  String[] {"ID Transaksi", 
                                                                                            "ID Barang",
@@ -465,25 +549,214 @@ public class DashboardAdmin extends javax.swing.JFrame {
                                                                                            "Harga Barang",
                                                                                            "Waktu Transaksi",
                                                                                            "Total Harga"}));
-        tabel.getColumnModel().getColumn(0).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(1).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(2).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(3).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(4).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(5).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(6).setPreferredWidth(5);
-        tabel.getColumnModel().getColumn(7).setPreferredWidth(5);
+        tabel.getColumnModel().getColumn(0).setPreferredWidth(15);
+        tabel.getColumnModel().getColumn(1).setPreferredWidth(15);
+        tabel.getColumnModel().getColumn(2).setPreferredWidth(15);
+        tabel.getColumnModel().getColumn(3).setPreferredWidth(15);
+        tabel.getColumnModel().getColumn(4).setPreferredWidth(15);
+        tabel.getColumnModel().getColumn(5).setPreferredWidth(15);
+        tabel.getColumnModel().getColumn(6).setPreferredWidth(15);
+        tabel.getColumnModel().getColumn(7).setPreferredWidth(15);
         tabel.setDefaultEditor(Object.class, null);
+        
+        session = "transaksi";
+        hideField();
+        hideLabel();
+        jTextField1.setVisible(true);
+        jTextField2.setVisible(true);
+        jTextField1.setText(Integer.toString(barangterjual));
+        jTextField2.setText(Integer.toString(pendapatan));
+        jLabel10.setText("Total Barang Terjual :");
+        jLabel11.setText("Total Pendapatan :");
+        
         hideButton();
     }//GEN-LAST:event_jLabel5MouseClicked
 
     private void tabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelMouseClicked
         // TODO add your handling code here:
+        
+        if (session == "barang"){
+            String id_barang,namabarang,kategoribarang;
+            int harga,stok;
+
+            int row = tabel.getSelectedRow();
+            id_barang = tabel.getValueAt(row, 0).toString();
+            namabarang = tabel.getValueAt(row, 1).toString();
+            kategoribarang = tabel.getValueAt(row, 2).toString();
+            harga = Integer.parseInt(tabel.getValueAt(row, 3).toString());
+            stok = Integer.parseInt(tabel.getValueAt(row, 4).toString());
+
+            jTextField1.setText(id_barang);
+            jTextField2.setText(namabarang);
+            combobox.setSelectedItem(kategoribarang);
+            jTextField4.setText(Integer.toString(harga));
+            jTextField5.setText(Integer.toString(stok)); 
+        } else if (session == "pembeli"){
+            String username, nama,email, alamat,password;
+            
+            int row = tabel.getSelectedRow();
+            username = tabel.getValueAt(row, 0).toString();
+            nama = tabel.getValueAt(row, 1).toString();
+            email = tabel.getValueAt(row, 2).toString();
+            alamat = tabel.getValueAt(row, 3).toString();
+            password = tabel.getValueAt(row, 4).toString();
+
+            jTextField1.setText(username);
+            jTextField2.setText(nama);
+            jTextField3.setText(email);
+            jTextField4.setText(alamat);
+            jTextField5.setText(password);    
+        } 
+        
+
     }//GEN-LAST:event_tabelMouseClicked
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void updateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateMouseClicked
+        // TODO add your handling code here:
+        try {
+            if (session =="pembeli"){
+                String username, nama, email, alamat, password;
+
+                int row = tabel.getSelectedRow();
+                username = jTextField1.getText();
+                nama = jTextField2.getText();
+                email = jTextField3.getText();
+                alamat = jTextField4.getText();
+                password = jTextField5.getText();   
+
+                Pembeli ubahpembeli = new Pembeli(username,nama,email,alamat,password);
+
+                int hasil = cp.updatePembeli(ubahpembeli);
+                if (hasil == -1){
+                    JOptionPane.showMessageDialog(null,"Gagal memperbaharui data");
+                } else {
+                    JOptionPane.showMessageDialog(null,"Berhasil memperbaharui data");
+                }
+                showPembeli();
+            } else if (session == "barang"){
+                String id_barang,namabarang,kategoribarang;
+                int harga,stok;
+
+                int row = tabel.getSelectedRow();
+                id_barang = jTextField1.getText();
+                namabarang = jTextField2.getText();
+                kategoribarang = (String) combobox.getSelectedItem();
+                harga = Integer.parseInt(jTextField4.getText());
+                stok = Integer.parseInt(jTextField5.getText());
+
+                Barang ubahbarang = new Barang(id_barang,namabarang,kategoribarang,harga,stok);
+
+                int hasil = cb.updateBarang(ubahbarang);
+                if (hasil == -1){
+                    JOptionPane.showMessageDialog(null,"Gagal memperbaharui data");
+                } else {
+                    JOptionPane.showMessageDialog(null,"Berhasil memperbaharui data");
+                }
+                showBarang();
+            }
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Pilih data dari tabel terlebih dahulu");
+        }
+    }//GEN-LAST:event_updateMouseClicked
+
+    private void hapusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hapusMouseClicked
+        // TODO add your handling code here:
+        try {
+            if (session =="pembeli"){
+                String username, nama, email, alamat, password;
+
+                int row = tabel.getSelectedRow();
+                username = jTextField1.getText();
+                nama = jTextField2.getText();
+                email = jTextField3.getText();
+                alamat = jTextField4.getText();
+                password = jTextField5.getText();   
+
+                Pembeli hapuspembeli = new Pembeli(username,nama,email,alamat,password);
+
+                int hasil = cp.deletePembeli(hapuspembeli);
+                if (hasil == -1){
+                    JOptionPane.showMessageDialog(null,"Gagal memperbaharui data");
+                } else {
+                    JOptionPane.showMessageDialog(null,"Berhasil memperbaharui data");
+                }
+                showPembeli();
+            } else if (session == "barang"){
+                String id_barang,namabarang,kategoribarang;
+                int harga,stok;
+
+                int row = tabel.getSelectedRow();
+                id_barang = jTextField1.getText();
+                namabarang = jTextField2.getText();
+                kategoribarang = (String) combobox.getSelectedItem();
+                harga = Integer.parseInt(jTextField4.getText());
+                stok = Integer.parseInt(jTextField5.getText());
+
+                Barang hapusbarang = new Barang(id_barang,namabarang,kategoribarang,harga,stok);
+
+                int hasil = cb.deleteBarang(hapusbarang);
+                if (hasil == -1){
+                    JOptionPane.showMessageDialog(null,"Gagal memperbaharui data");
+                } else {
+                    JOptionPane.showMessageDialog(null,"Berhasil memperbaharui data");
+                }
+                showBarang();
+            }
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Pilih data dari tabel terlebih dahulu");
+        }
+    }//GEN-LAST:event_hapusMouseClicked
+
+    private void tambahMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tambahMouseClicked
+        // TODO add your handling code here:
+        try {
+            if (session =="pembeli"){
+                String username, nama, email, alamat, password;
+
+                username = jTextField1.getText();
+                nama = jTextField2.getText();
+                email = jTextField3.getText();
+                alamat = jTextField4.getText();
+                password = jTextField5.getText();   
+
+                Pembeli pembeli = new Pembeli(username,nama,email,alamat,password);
+
+                int hasil = cp.createPembeli(pembeli);
+                if (hasil == -1){
+                    JOptionPane.showMessageDialog(null,"Gagal memperbaharui data");
+                } else {
+                    JOptionPane.showMessageDialog(null,"Berhasil memperbaharui data");
+                }
+                showPembeli();
+            } else if (session == "barang"){
+                String id_barang,namabarang,kategoribarang;
+                int harga,stok;
+
+                id_barang = jTextField1.getText();
+                namabarang = jTextField2.getText();
+                kategoribarang = (String) combobox.getSelectedItem();
+                harga = Integer.parseInt(jTextField4.getText());
+                stok = Integer.parseInt(jTextField5.getText());
+
+                Barang barang = new Barang(id_barang,namabarang,kategoribarang,harga,stok);
+
+                int hasil = cb.createBarang(barang);
+                if (hasil == -1){
+                    JOptionPane.showMessageDialog(null,"Gagal memperbaharui data");
+                } else {
+                    JOptionPane.showMessageDialog(null,"Berhasil memperbaharui data");
+                }
+                showBarang();
+            }
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Pilih data dari tabel terlebih dahulu");
+        }
+    }//GEN-LAST:event_tambahMouseClicked
 
     /**
      * @param args the command line arguments
@@ -522,12 +795,14 @@ public class DashboardAdmin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> combobox;
     private javax.swing.JPanel hapus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
