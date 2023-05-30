@@ -72,7 +72,7 @@ public class KeranjangController {
        ConnectionManager conman = new ConnectionManager(); //membuat objek koneksi ke databse
        Connection con = conman.getConnection(); //koneksi ke database
        Keranjang krg = null; //inisialisasi objek mahasiswa sebagai null
-       String query = "SELECT * FROM keranjang WHERE id_barang = " + id_barang; //mengambil data mahasiswa dari database
+       String query = "SELECT * FROM keranjang WHERE id_barang = '" + id_barang +"'"; //mengambil data mahasiswa dari database
        try {
            Statement stm = con.createStatement(); //membuat statement untuk eksekusi query
            ResultSet rs = stm.executeQuery(query); //eksekusi query
