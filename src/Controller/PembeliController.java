@@ -15,6 +15,29 @@ public class PembeliController {
     private Connection con;
     private Statement st;
     private ResultSet rs;
+    
+    public Pembeli getId(String username){
+       ConnectionManager conman = new ConnectionManager(); //membuat objek koneksi ke databse
+       Connection con = conman.getConnection(); //koneksi ke database
+       Pembeli pem = null; //inisialisasi objek mahasiswa sebagai null
+       String query = "SELECT * FROM pembeli WHERE username = '" + username + "'"; //mengambil data dari database
+       try {
+           Statement stm = con.createStatement(); //membuat statement untuk eksekusi query
+           ResultSet rs = stm.executeQuery(query); //eksekusi query
+           if (rs.next()){
+               String usernamepem = rs.getString("username"); //mendapatkan value "username" dari result set
+               String nama = rs.getString("nama"); //mendapatkan value "nama" dari result set
+               String email = rs.getString("email"); //mendapatkan value "email" dari result set
+               String alamat = rs.getString("alamat");
+               String password = rs.getString("password");
+               pem = new Pembeli(usernamepem,nama,email,alamat,password); //membuat object baru berdasarkan value dari result set
+           }
+       } catch (SQLException ex) {
+           Logger.getLogger(PembeliController.class.getName()).log(Level.SEVERE, null, ex); //mencatat pesan kesalalahan  
+       }
+       conman.closeConnection(); //menutup koneksi
+       return pem; //mengembalikan nilai pem
+   }
 
     public int createPembeli(Pembeli pembeli) {
         ConnectionManager conman = new ConnectionManager(); //membuat objek untuk koneksi ke database dengan memanggil method getConnection()
@@ -22,7 +45,7 @@ public class PembeliController {
         try (Connection con = conman.getConnection()) { //mencoba untuk melakukan koneksi ke database dengan memanggil method getConnection()
             //query sql untuk memasukkan pembeli baru
             String query = "INSERT INTO pembeli(username, nama, email, alamat, password) VALUES ('" + pembeli.getUsername() + "', '" + pembeli.getNama() + "', '" + pembeli.getEmail() + "', '" + pembeli.getAlamat() + "', '" + pembeli.getPassword() + "')"; //query untuk memasukkan data pembeli yang baru  
-            String sama = "SELECT * FROM pembeli WHERE username = '"+pembeli.getUsername()+"'"; //melihat pembeli berdasarkan nim yanga da
+            String sama = "SELECT * FROM pembeli WHERE username = '"+pembeli.getUsername()+"'"; //melihat pembeli berdasarkan yanga da
             Statement st = con.createStatement(); //membuat statement untuk eksekusi query
             ResultSet rs = st.executeQuery(sama); //eksekusi query
             if(rs.next() == true){ //kondisi jika ada pembeli yang sama username
@@ -81,7 +104,7 @@ public class PembeliController {
         return hasil;
     }
     
-    public  int updatePembeli(Pembeli pembeli) {
+    public int updatePembeli(Pembeli pembeli) {
         ConnectionManager conman = new ConnectionManager();
         int hasil = 0;
         Connection con = conman.getConnection();
@@ -115,5 +138,7 @@ public class PembeliController {
         }
         return false;
     }
+    
+    
 
 }
