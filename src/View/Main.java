@@ -4,6 +4,7 @@
  */
 package View;
 
+import Controller.KeranjangController;
 import java.awt.*;
 import javax.swing.*;
 import Controller.PembeliController;
@@ -16,12 +17,19 @@ import View.DashboardPembeli;
  */
 public class Main extends javax.swing.JFrame {
     PembeliController cp;
+    KeranjangController ck;
     public static Pembeli loginUser;
     /**
      * Creates new form MainGui
      */
     public Main() {
         initComponents();
+        deleteKeranjang();
+    }
+    
+    private void deleteKeranjang(){
+        ck = new KeranjangController();
+        ck.deleteKeranjang();
     }
 
     /**
@@ -48,7 +56,6 @@ public class Main extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mamania Bakery");
         setBackground(new java.awt.Color(255, 204, 204));
-        setPreferredSize(new java.awt.Dimension(506, 591));
         setResizable(false);
 
         jPanel2.setBackground(new java.awt.Color(255, 204, 204));
@@ -106,6 +113,11 @@ public class Main extends javax.swing.JFrame {
         fieldPass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fieldPassActionPerformed(evt);
+            }
+        });
+        fieldPass.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                fieldPassKeyPressed(evt);
             }
         });
 
@@ -251,6 +263,11 @@ public class Main extends javax.swing.JFrame {
         new Register().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel7MouseClicked
+
+    private void fieldPassKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldPassKeyPressed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_fieldPassKeyPressed
 
     /**
      * @param args the command line arguments

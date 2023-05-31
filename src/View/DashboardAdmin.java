@@ -626,7 +626,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
                 Pembeli ubahpembeli = new Pembeli(username,nama,email,alamat,password);
 
                 int hasil = cp.updatePembeli(ubahpembeli);
-                if (hasil == -1){
+                if (hasil == 0){
                     JOptionPane.showMessageDialog(null,"Gagal memperbaharui data");
                 } else {
                     JOptionPane.showMessageDialog(null,"Berhasil memperbaharui data");
@@ -646,7 +646,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
                 Barang ubahbarang = new Barang(id_barang,namabarang,kategoribarang,harga,stok);
 
                 int hasil = cb.updateBarang(ubahbarang);
-                if (hasil == -1){
+                if (hasil == 0){
                     JOptionPane.showMessageDialog(null,"Gagal memperbaharui data");
                 } else {
                     JOptionPane.showMessageDialog(null,"Berhasil memperbaharui data");
@@ -674,7 +674,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
                 Pembeli hapuspembeli = new Pembeli(username,nama,email,alamat,password);
 
                 int hasil = cp.deletePembeli(hapuspembeli);
-                if (hasil == -1){
+                if (hasil == 0){
                     JOptionPane.showMessageDialog(null,"Gagal memperbaharui data");
                 } else {
                     JOptionPane.showMessageDialog(null,"Berhasil memperbaharui data");
@@ -694,7 +694,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
                 Barang hapusbarang = new Barang(id_barang,namabarang,kategoribarang,harga,stok);
 
                 int hasil = cb.deleteBarang(hapusbarang);
-                if (hasil == -1){
+                if (hasil == 0){
                     JOptionPane.showMessageDialog(null,"Gagal memperbaharui data");
                 } else {
                     JOptionPane.showMessageDialog(null,"Berhasil memperbaharui data");
@@ -748,7 +748,7 @@ public class DashboardAdmin extends javax.swing.JFrame {
                 showBarang();
             }
         } catch (Exception e){
-            JOptionPane.showMessageDialog(null, "Pilih data dari tabel terlebih dahulu");
+            JOptionPane.showMessageDialog(null, "Gagal memperbaharui data");
         }
     }//GEN-LAST:event_tambahMouseClicked
 
